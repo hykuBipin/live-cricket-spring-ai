@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Live Cricket AI</title>
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+</head>
+<body>
+
+<h1>Live Cricket AI Score</h1>
+
+<div id="score"></div>
+<div id="commentary"></div>
+
+<script>
+const socket = new SockJS('/ws');
+const stomp = Stomp.over(socket);
+
+stomp.connect({}, function(){
+    stomp.subscribe("/topic/live", function(msg){
+        const data = JSON.parse(msg.body);
+        document.getElementById("score").innerHTML =
+            JSON.stringify(data.score);
+
+        document.getElementById("commentary").innerHTML =
+            data.commentary;
+    });
+});
+</script>
+
+</body>
+</html>
